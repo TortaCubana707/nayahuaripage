@@ -1,0 +1,84 @@
+
+--- Logs y Node.js (Frontend) ---
+
+logs
+.log
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+node_modules
+dist
+dist-ssr
+*.local
+
+--- Editor directories and files ---
+
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+.ntvs
+*.njsproj
+*.sln
+*.sw?
+
+--- Variables de Entorno y Secretos (CRÍTICO) ---
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+--- Python y Flask (Backend) ---
+
+Byte-compiled / optimized / DLL files
+
+pycache/
+*.py[cod]
+*$py.class
+
+C extensions
+
+*.so
+
+Distribution / packaging
+
+.Python
+build/
+develop-eggs/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+Virtual Environments
+
+venv/
+env/
+ENV/
+.venv/
+
+--- Base de Datos (Ignorar archivos locales) ---
+
+*.sqlite
+.sqlite3
+.db
+database/.db
+database/.sqlite
+
+Flask instance folder
+
+instance/
+.webassets-cache

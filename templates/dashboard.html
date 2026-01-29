@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Gestión | Nayahuari</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}?v=20">
+</head>
+<body>
+    <div class="zarape-line"></div>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="logo" style="margin-bottom: 3rem; text-align: center;">
+                <span style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent);">PANEL</span><br>
+                <strong style="color: white; font-size: 1.5rem;">NAYAHUARI</strong>
+            </div>
+            
+            <nav id="adminMenu" style="display: none;">
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 10px; font-weight: bold; padding-left: 15px;">ADMINISTRACIÓN</p>
+                <a href="#" onclick="mostrarSeccion('bailarines')" id="nav-bailarines" class="menu-item active"><span class="material-icons">people_alt</span> Bailarines</a>
+                <a href="#" onclick="mostrarSeccion('eventos')" id="nav-eventos" class="menu-item"><span class="material-icons">event</span> Eventos</a>
+                <a href="#" onclick="mostrarSeccion('pagos')" id="nav-pagos" class="menu-item"><span class="material-icons">payments</span> Pagos</a>
+                <a href="#" onclick="mostrarSeccion('vestuario')" id="nav-vestuario" class="menu-item"><span class="material-icons">checkroom</span> Vestuario</a>
+                <a href="#" onclick="mostrarSeccion('usuarios')" id="nav-usuarios" class="menu-item"><span class="material-icons">admin_panel_settings</span> Usuarios</a>
+                <a href="#" onclick="mostrarSeccion('asistencia')" id="nav-asistencia" class="menu-item"><span class="material-icons">checklist</span> Asistencia</a>
+            </nav>
+
+            <nav id="userMenu" style="display: none;">
+                <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 10px; font-weight: bold; padding-left: 15px;">MI CUENTA</p>
+                <a href="#" onclick="mostrarSeccion('alumno-asistencia')" id="nav-alumno-asistencia" class="menu-item active"><span class="material-icons">how_to_reg</span> Mi Asistencia</a>
+                <a href="#" onclick="mostrarSeccion('alumno-eventos')" id="nav-alumno-eventos" class="menu-item"><span class="material-icons">event_note</span> Agenda</a>
+                <a href="#" onclick="mostrarSeccion('alumno-vestuario')" id="nav-alumno-vestuario" class="menu-item"><span class="material-icons">checkroom</span> Mis Préstamos</a>
+            </nav>
+            
+            <div style="margin-top: auto;">
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;">
+                <a href="/" class="menu-item"><span class="material-icons">public</span> Ver Web</a>
+                <button onclick="cerrarSesion()" class="menu-item" style="width: 100%; background: none; border: none; cursor: pointer; color: #ef4444;"><span class="material-icons">logout</span> Cerrar Sesión</button>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="header-bar animate-fade">
+                <div>
+                    <h1 id="pageTitle" style="color: var(--dark-bg);">Bienvenido</h1>
+                    <p id="welcomeTitle" style="color: var(--text-light); font-size: 0.9rem;">Panel de Control</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px; border-radius: 50px; box-shadow: var(--shadow);">
+                    <div style="background: var(--amarillo-cempasuchil); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="material-icons" style="color: var(--azul-noche); font-size: 1.2rem;">person</span></div>
+                    <div><span id="userNameDisplay" style="display: block; font-weight: bold; font-size: 0.9rem; color: var(--azul-noche);">Usuario</span><span id="userRoleDisplay" style="display: block; font-size: 0.7rem; color: var(--text-light);">Rol</span></div>
+                </div>
+            </header>
+            
+            <!-- SECCIONES DE ADMIN -->
+            <div id="section-bailarines" class="admin-section animate-slide"><!-- Contenido Bailarines --> <div class="card-table"><h3 style="color:var(--primary); margin-bottom:1rem;">Gestión de Bailarines</h3><form id="formBailarin" class="form-grid-responsive"><div class="form-group-item"><label>Nombre</label><input type="text" id="nombreBailarin" class="form-control" placeholder="Nombre" required></div><div class="form-group-item"><label>Nivel</label><select id="nivelBailarin" class="form-control"><option>Principiante</option><option>Intermedio</option><option>Avanzado</option></select></div><div class="form-group-item"><label>Teléfono</label><input type="text" id="contactoBailarin" class="form-control" placeholder="Teléfono"></div><div class="form-group-item btn-container"><button class="btn-success"><span class="material-icons">save</span> Guardar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><thead><tr><th>Nombre</th><th>Nivel</th><th>Acciones</th></tr></thead><tbody id="tablaBailarines"></tbody></table></div></div>
+            <div id="section-eventos" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3 style="color:var(--primary); margin-bottom:1rem;">Eventos</h3><form id="formEvento" class="form-grid-responsive"><div class="form-group-item"><input type="text" id="tituloEvento" class="form-control" placeholder="Título" required></div><div class="form-group-item"><input type="text" id="fechaEvento" class="form-control" placeholder="Fecha" required></div><div class="form-group-item"><input type="text" id="lugarEvento" class="form-control" placeholder="Lugar" required></div><div class="form-group-item"><input type="text" id="horaEvento" class="form-control" placeholder="Hora"></div><div class="btn-container"><button class="btn-success"><span class="material-icons">add_circle</span> Crear</button></div></form></div><div class="card-table"><table class="tabla-moderna"><thead><tr><th>Evento</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="tablaEventos"></tbody></table></div></div>
+            <div id="section-pagos" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3 style="color:var(--primary);">Pagos</h3><form id="formPago" class="form-grid-responsive"><div class="form-group-item"><select id="pagoBailarin" class="form-control"></select></div><div class="form-group-item"><input type="text" id="pagoConcepto" class="form-control" placeholder="Concepto"></div><div class="form-group-item"><input type="number" id="pagoMonto" class="form-control" placeholder="Monto"></div><div class="btn-container"><button class="btn-success"><span class="material-icons">payments</span> Registrar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaPagos"></tbody></table></div></div>
+            <div id="section-usuarios" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3 style="color:var(--primary);">Usuarios</h3><form id="formUsuario" class="form-grid-responsive"><input type="hidden" id="usuarioId"><div class="form-group-item"><input type="text" id="usuarioUsername" class="form-control" placeholder="Usuario" required></div><div class="form-group-item"><input type="password" id="usuarioPassword" class="form-control" placeholder="Contraseña"></div><div class="form-group-item"><select id="usuarioRol" class="form-control"><option value="alumno">Alumno</option><option value="maestro">Maestro</option><option value="administrativo">Administrativo</option><option value="admin">Administrador</option></select></div><div class="btn-container"><button class="btn-success"><span class="material-icons">person_add</span> Crear Usuario</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaUsuarios"></tbody></table></div></div>
+            <div id="section-vestuario" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3 style="color:var(--primary);">Vestuario</h3><form id="formVestuario" class="form-grid-responsive"><div class="form-group-item"><input type="text" id="vestuarioNombre" class="form-control" placeholder="Nombre"></div><div class="form-group-item"><select id="vestuarioTipo" class="form-control"><option>Traje</option><option>Accesorio</option></select></div><div class="form-group-item"><input type="number" id="vestuarioCantidad" class="form-control" value="1"></div><div class="form-group-item"><input type="text" id="vestuarioTalla" class="form-control" placeholder="Talla"></div><div class="form-group-item"><select id="vestuarioEstado" class="form-control"><option>Bueno</option><option>Reparación</option></select></div><div class="btn-container"><button class="btn-success"><span class="material-icons">add</span> Agregar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaVestuario"></tbody></table></div></div>
+            <div id="section-asistencia" class="admin-section animate-slide" style="display:none;"><div class="card-table"><div style="display:flex; justify-content:space-between; align-items:center;"><h3 style="margin:0; color:var(--primary);">Asistencia Global</h3><div><input type="date" id="fechaAsistencia" class="form-control" style="width:auto; display:inline-block;"><button onclick="buscarAsistencia()" class="btn-success" style="margin-left:10px;">Buscar</button></div></div></div><div class="card-table"><table class="tabla-moderna"><thead><tr><th>Nombre</th><th>Nivel</th><th>Asistió</th></tr></thead><tbody id="tablaAsistencia"></tbody></table><div style="margin-top:20px; text-align:right;"><button onclick="guardarAsistencia()" class="btn-success"><span class="material-icons">save</span> Guardar Cambios</button></div></div></div>
+
+            <!-- SECCIONES DE ALUMNO (NUEVAS) -->
+            <div id="section-alumno-asistencia" class="alumno-section animate-slide" style="display:none;">
+                <div class="user-welcome-card" style="background: linear-gradient(135deg, var(--rosa-mexicano), var(--azul-talavera)); color: white; padding: 3rem; border-radius: 20px; text-align: center; margin-bottom: 2rem;">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 10px;">¡Hola!</h2>
+                    <p style="font-size: 1.2rem;">Marca tu asistencia para el día de hoy.</p>
+                    <div style="margin-top: 2rem;">
+                        <button onclick="registrarMiAsistencia()" id="btnMarcarAsistencia" class="btn-success" style="font-size: 1.2rem; padding: 15px 40px; border: none;">
+                            <span class="material-icons" style="vertical-align: middle; margin-right: 10px;">check_circle</span>
+                            Marcar Asistencia Hoy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-alumno-eventos" class="alumno-section animate-slide" style="display:none;">
+                <h3 style="color: var(--dark-bg); margin-bottom: 1.5rem;">Agenda de Eventos</h3>
+                <div id="alumnoEventosContainer" class="calendar-grid">
+                    <!-- Se llena con JS -->
+                </div>
+            </div>
+
+            <div id="section-alumno-vestuario" class="alumno-section animate-slide" style="display:none;">
+                <h3 style="color: var(--dark-bg); margin-bottom: 1.5rem;">Inventario Disponible</h3>
+                <div class="card-table">
+                    <p style="color: var(--text-light); margin-bottom: 20px;">Lista de material disponible en el inventario general.</p>
+                    <div id="alumnoVestuarioContainer">
+                        <!-- Se llena con JS -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=18"></script>
+</body>
+</html>

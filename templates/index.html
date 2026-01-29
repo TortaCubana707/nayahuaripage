@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nayahuari | Ballet Folklórico</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+<body>
+    <!-- Línea decorativa superior -->
+    <div class="zarape-line"></div>
+    
+    <nav class="navbar">
+        <div class="logo">
+            <span style="font-size: 0.7rem; letter-spacing: 2px;">BALLET FOLKLÓRICO</span><br>
+            <strong style="color: var(--amarillo-cempasuchil); font-size: 1.5rem;">NAYAHUARI</strong>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#inicio">Inicio</a>
+            <a href="#nosotros">Nosotros</a>
+            <a href="#agenda">Agenda</a>
+            <button id="btnAuth" class="btn-login">
+                <span class="material-icons">login</span> Acceso
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <!-- SECCIÓN HERO -->
+        <section id="inicio" class="hero">
+            <div class="hero-content">
+                <h3 style="color: var(--rosa-mexicano); letter-spacing: 5px; text-transform: uppercase;">Orgullo y Tradición</h3>
+                <h1 style="font-size: 4rem; line-height: 1; margin: 1rem 0;">MÉXICO EN EL <br><span style="color:var(--amarillo-cempasuchil)">CORAZÓN</span></h1>
+                <p style="margin-bottom: 2rem; font-size: 1.2rem; opacity: 0.9;">Compañía de Danza Folklórica Mexicana</p>
+                <button class="btn-primary" onclick="document.getElementById('agenda').scrollIntoView({behavior: 'smooth'})">Ver Presentaciones</button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN NOSOTROS -->
+        <section id="nosotros" style="padding: 100px 5%;">
+            <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
+                <div>
+                    <div style="width: 100%; height: 400px; background: #ddd; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 20px 20px 0 var(--rosa-mexicano);">
+                        <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?q=80&w=1000" alt="Ballet" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                </div>
+                <div>
+                    <h2 style="font-size: 3rem; color: var(--azul-noche); margin-bottom: 1.5rem;">Nuestra <span style="color: var(--rosa-mexicano);">Esencia</span></h2>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #555;">Nayahuari nace de la pasión por nuestras raíces, llevando el color y la fuerza de México a cada escenario del mundo. Somos una familia dedicada a preservar el arte del zapateado y el color de nuestros trajes típicos.</p>
+                    
+                    <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div style="padding: 20px; background: white; border-radius: 15px; border-left: 5px solid var(--azul-talavera); box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <h4 style="color: var(--azul-talavera); margin:0;">+15 Años</h4>
+                            <p style="margin:0; font-size: 0.9rem;">De trayectoria artística.</p>
+                        </div>
+                        <div style="padding: 20px; background: white; border-radius: 15px; border-left: 5px solid var(--rosa-mexicano); box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+                            <h4 style="color: var(--rosa-mexicano); margin:0;">+50 Danzas</h4>
+                            <p style="margin:0; font-size: 0.9rem;">En nuestro repertorio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN AGENDA -->
+        <section id="agenda" style="padding: 100px 5%; background: #fdfaf5;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <h2 style="font-size: 3rem; color: var(--azul-noche);">Próximas <span style="color: var(--amarillo-cempasuchil);">Galas</span></h2>
+                <p>Acompáñanos en nuestras siguientes presentaciones</p>
+            </div>
+            <div id="eventsContainer" class="calendar-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Se carga vía JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE LOGIN -->
+    <div id="loginModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
+        <div class="modal-content" style="background:white; margin: 10% auto; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; position: relative;">
+            <span class="close-btn" id="closeModal" style="position:absolute; right:20px; top:15px; font-size: 2rem; cursor:pointer;">&times;</span>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="color: var(--azul-noche); margin:0;">Iniciar Sesión</h2>
+                <p style="color: #666; font-size: 0.9rem;">Acceso para integrantes y staff</p>
+            </div>
+            <form id="universalLoginForm">
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="loginUser" placeholder="Usuario" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <input type="password" id="loginPass" placeholder="Contraseña" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+                </div>
+                <p id="loginMessage" style="color: red; font-size: 0.8rem; text-align: center; margin-bottom: 10px;"></p>
+                <button type="submit" class="btn-primary" style="width: 100%; padding: 15px; border:none; border-radius:8px; background: var(--rosa-mexicano); color:white; font-weight:bold; cursor:pointer;">Entrar al Panel</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
