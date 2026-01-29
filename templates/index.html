@@ -1,102 +1,242 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nayahuari | Ballet Folklórico</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nayahuari | Tradición Viva</title>
+    
+    <!-- Iconos Material Design -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <!-- Iconos Social Media (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS ACTUALIZADO -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}?v=final">
 </head>
 <body>
-    <!-- Línea decorativa superior -->
+
+    <!-- LÍNEA DECORATIVA TIPO SARAPE -->
     <div class="zarape-line"></div>
-    
+
+    <!-- NAVEGACIÓN -->
     <nav class="navbar">
-        <div class="logo">
-            <span style="font-size: 0.7rem; letter-spacing: 2px;">BALLET FOLKLÓRICO</span><br>
-            <strong style="color: var(--amarillo-cempasuchil); font-size: 1.5rem;">NAYAHUARI</strong>
-        </div>
+      <div class="logo">
+        <span>BALLET FOLKLÓRICO</span>
+        <strong>NAYAHUARI</strong>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#directora">Directora</a></li>
+        <li><a href="#trayectoria">Trayectoria</a></li>
+        <li><a href="#agenda">Agenda</a></li>
+        <li><a href="#ubicacion">Ubicación</a></li>
         
-        <div class="nav-links">
-            <a href="#inicio">Inicio</a>
-            <a href="#nosotros">Nosotros</a>
-            <a href="#agenda">Agenda</a>
-            <button id="btnAuth" class="btn-login">
-                <span class="material-icons">login</span> Acceso
-            </button>
-        </div>
+        <li><button id="btnAuth" class="btn-login"><span class="material-icons">account_circle</span> Acceso</button></li>
+
+        <li id="nav-admin-panel" style="display: none;">
+            <a href="/dashboard" class="btn-panel-admin">
+                <span class="material-icons" style="font-size:16px;">dashboard</span> PANEL
+            </a>
+        </li>
+      </ul>
+      <!-- Menú móvil no funcional eliminado para evitar confusión -->
     </nav>
 
-    <main>
-        <!-- SECCIÓN HERO -->
-        <section id="inicio" class="hero">
-            <div class="hero-content">
-                <h3 style="color: var(--rosa-mexicano); letter-spacing: 5px; text-transform: uppercase;">Orgullo y Tradición</h3>
-                <h1 style="font-size: 4rem; line-height: 1; margin: 1rem 0;">MÉXICO EN EL <br><span style="color:var(--amarillo-cempasuchil)">CORAZÓN</span></h1>
-                <p style="margin-bottom: 2rem; font-size: 1.2rem; opacity: 0.9;">Compañía de Danza Folklórica Mexicana</p>
-                <button class="btn-primary" onclick="document.getElementById('agenda').scrollIntoView({behavior: 'smooth'})">Ver Presentaciones</button>
-            </div>
-        </section>
+    <!-- PORTADA (HERO) -->
+    <header id="inicio" class="hero">
+      <div class="hero-content reveal">
+        <h3>Bajo la dirección de Carmen Servin</h3>
+        <h1>NAYAHUARI</h1>
+        <p>Orgullo, Tradición y Corazón en cada zapateado.</p>
+        <a href="#agenda" class="btn-primary">Ver Próximas Presentaciones</a>
+      </div>
+    </header>
 
-        <!-- SECCIÓN NOSOTROS -->
-        <section id="nosotros" style="padding: 100px 5%;">
-            <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;">
-                <div>
-                    <div style="width: 100%; height: 400px; background: #ddd; border-radius: 20px; position: relative; overflow: hidden; box-shadow: 20px 20px 0 var(--rosa-mexicano);">
-                        <img src="https://images.unsplash.com/photo-1504196606672-aef5c9cefc92?q=80&w=1000" alt="Ballet" style="width:100%; height:100%; object-fit:cover;">
-                    </div>
-                </div>
-                <div>
-                    <h2 style="font-size: 3rem; color: var(--azul-noche); margin-bottom: 1.5rem;">Nuestra <span style="color: var(--rosa-mexicano);">Esencia</span></h2>
-                    <p style="font-size: 1.1rem; line-height: 1.8; color: #555;">Nayahuari nace de la pasión por nuestras raíces, llevando el color y la fuerza de México a cada escenario del mundo. Somos una familia dedicada a preservar el arte del zapateado y el color de nuestros trajes típicos.</p>
-                    
-                    <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div style="padding: 20px; background: white; border-radius: 15px; border-left: 5px solid var(--azul-talavera); box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                            <h4 style="color: var(--azul-talavera); margin:0;">+15 Años</h4>
-                            <p style="margin:0; font-size: 0.9rem;">De trayectoria artística.</p>
-                        </div>
-                        <div style="padding: 20px; background: white; border-radius: 15px; border-left: 5px solid var(--rosa-mexicano); box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
-                            <h4 style="color: var(--rosa-mexicano); margin:0;">+50 Danzas</h4>
-                            <p style="margin:0; font-size: 0.9rem;">En nuestro repertorio.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN AGENDA -->
-        <section id="agenda" style="padding: 100px 5%; background: #fdfaf5;">
-            <div style="text-align: center; margin-bottom: 4rem;">
-                <h2 style="font-size: 3rem; color: var(--azul-noche);">Próximas <span style="color: var(--amarillo-cempasuchil);">Galas</span></h2>
-                <p>Acompáñanos en nuestras siguientes presentaciones</p>
-            </div>
-            <div id="eventsContainer" class="calendar-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                <!-- Se carga vía JavaScript -->
-            </div>
-        </section>
-    </main>
-
-    <!-- MODAL DE LOGIN -->
-    <div id="loginModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);">
-        <div class="modal-content" style="background:white; margin: 10% auto; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; position: relative;">
-            <span class="close-btn" id="closeModal" style="position:absolute; right:20px; top:15px; font-size: 2rem; cursor:pointer;">&times;</span>
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <h2 style="color: var(--azul-noche); margin:0;">Iniciar Sesión</h2>
-                <p style="color: #666; font-size: 0.9rem;">Acceso para integrantes y staff</p>
-            </div>
-            <form id="universalLoginForm">
-                <div style="margin-bottom: 15px;">
-                    <input type="text" id="loginUser" placeholder="Usuario" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
-                </div>
-                <div style="margin-bottom: 20px;">
-                    <input type="password" id="loginPass" placeholder="Contraseña" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
-                </div>
-                <p id="loginMessage" style="color: red; font-size: 0.8rem; text-align: center; margin-bottom: 10px;"></p>
-                <button type="submit" class="btn-primary" style="width: 100%; padding: 15px; border:none; border-radius:8px; background: var(--rosa-mexicano); color:white; font-weight:bold; cursor:pointer;">Entrar al Panel</button>
-            </form>
+    <!-- SECCIÓN DIRECTORA -->
+    <section id="directora" class="container section-padding">
+      <div class="grid-2">
+        <div class="text-content reveal">
+          <span class="subtitle-badge">Liderazgo y Pasión</span>
+          <h2>Mtra. Carmen Servin</h2>
+          <p>Con años de trayectoria preservando nuestras raíces, la maestra Carmen ha llevado al Ballet Folklórico Nayahuari a representar nuestra cultura con dignidad y excelencia. Nayahuari no es solo un grupo, es una familia unida por la danza y el amor a México.</p>
+          
+          <div class="director-quote">
+            <p>"La danza es el lenguaje oculto del alma mexicana, donde cada paso cuenta una historia."</p>
+          </div>
         </div>
+        
+        <div class="image-content reveal">
+          <div class="director-frame">
+            <!-- La imagen se carga desde el CSS (background-image) -->
+            <div class="director-img"></div>
+            <div class="floating-badge">
+                Fundadora
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN TRAYECTORIA (LÍNEA DEL TIEMPO) -->
+    <section id="trayectoria" class="section-gray section-padding">
+      <div class="container">
+        <div class="text-center mb-2 reveal">
+            <h2 class="section-title" style="font-size: 2.5rem; color: var(--dark-bg); margin-bottom: 10px;">Nuestra Trayectoria</h2>
+            <p class="section-subtitle" style="color: var(--text-light); margin-bottom: 4rem;">Un viaje lleno de pasión y logros a través de los años.</p>
+        </div>
+        
+        <div class="timeline">
+            <!-- Hito 1 -->
+            <div class="timeline-item left reveal">
+                <div class="timeline-icon">
+                    <span class="material-icons">star</span>
+                </div>
+                <div class="timeline-content">
+                    <span class="year-badge">2015</span>
+                    <h3>El Inicio</h3>
+                    <p>Nace el sueño. La maestra Carmen Servin funda el grupo con solo 8 bailarines apasionados por el folklore.</p>
+                </div>
+            </div>
+            
+            <!-- Hito 2 -->
+            <div class="timeline-item right reveal">
+                <div class="timeline-icon">
+                    <span class="material-icons">emoji_events</span>
+                </div>
+                <div class="timeline-content">
+                    <span class="year-badge">2018</span>
+                    <h3>Primer Nacional</h3>
+                    <p>Representamos a nuestro estado en el concurso nacional de folklore, obteniendo mención honorífica por vestuario y ejecución.</p>
+                </div>
+            </div>
+            
+            <!-- Hito 3 -->
+            <div class="timeline-item left reveal">
+                <div class="timeline-icon">
+                    <span class="material-icons">flight_takeoff</span>
+                </div>
+                <div class="timeline-content">
+                    <span class="year-badge">2023</span>
+                    <h3>Gira Internacional</h3>
+                    <p>Nayahuari cruza fronteras para llevar el jarabe tapatío a nuevos escenarios en Sudamérica.</p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN AGENDA -->
+    <section id="agenda" class="section-dark section-padding">
+      <div class="container">
+        <div class="agenda-header reveal">
+          <h2>Próximas Presentaciones</h2>
+        </div>
+
+        <div class="calendar-grid" id="eventsContainer">
+          <!-- Se llena con JS -->
+          <p style="color: #aaa;">Cargando eventos...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN UBICACIÓN -->
+    <section id="ubicacion" class="container section-padding">
+      <h2 class="text-center mb-2 reveal" style="font-size: 2.5rem; margin-bottom: 10px;">Ensaya con Nosotros</h2>
+      <p class="text-center reveal" style="color: var(--text-light); margin-bottom: 4rem;">Únete a la familia Nayahuari</p>
+      
+      <div class="grid-2" style="align-items: start;">
+        
+        <!-- Mapa -->
+        <div class="map-box reveal">
+          <!-- Reemplaza el SRC con la ubicación real de tu academia -->
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3451.8681942994626!2d-100.4593488!3d20.6348925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d3508aff8f5865%3A0xdc6e39f648bded6a!2sDelegaci%C3%B3n%20Felix%20Osores%20Sotomayor!5e1!3m2!1ses-419!2smx!4v1769648463435!5m2!1ses-419!2smx" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <!-- Horarios -->
+        <div class="schedule-box reveal">
+          <h3 style="color: var(--azul-talavera); display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+            <span class="material-icons">calendar_today</span> Horarios de Clase
+          </h3>
+          <ul class="schedule-list" style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+              <span class="group-name" style="display: block; font-weight: bold; color: var(--rosa-oscuro); font-size: 1.1rem;">Principiantes</span>
+              <span class="group-time" style="color: var(--text-light);">Sábados: 4:00 PM - 6:00 PM</span>
+            </li>
+            <li style="margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+              <span class="group-name" style="display: block; font-weight: bold; color: var(--naranja-barro); font-size: 1.1rem;">Intermedios</span>
+              <span class="group-time" style="color: var(--text-light);">Sábados: 4:00 PM - 6:00 PM</span>
+            </li>
+            <li>
+              <span class="group-name" style="display: block; font-weight: bold; color: var(--verde-agave); font-size: 1.1rem;">Compañía Titular</span>
+              <span class="group-time" style="color: var(--text-light);">Sábados: 5:30 PM  - 9:00 PM</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER CON REDES SOCIALES -->
+    <footer class="section-dark">
+      <div class="container">
+          <h2 style="color: var(--amarillo-cempasuchil); margin-bottom: 1rem; letter-spacing: 2px;">NAYAHUARI</h2>
+          <p style="opacity: 0.8; font-size: 1.1rem; margin-bottom: 2rem;">Orgullo, Tradición y Pasión.</p>
+          
+          <!-- Redes Sociales Funcionales -->
+          <div class="social-links" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 2rem;">
+              
+              <!-- WhatsApp -->
+              <a href="https://wa.me/521XXXXXXXXXX" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; transition: color 0.3s;" onmouseover="this.style.color='#25D366'" onmouseout="this.style.color='white'">
+                  <i class="fab fa-whatsapp"></i>
+              </a>
+
+              <!-- Facebook -->
+              <a href="https://www.facebook.com/TU_PAGINA" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; transition: color 0.3s;" onmouseover="this.style.color='var(--amarillo-cempasuchil)'" onmouseout="this.style.color='white'">
+                  <i class="fab fa-facebook"></i>
+              </a>
+
+              <!-- Instagram -->
+              <a href="https://www.instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; transition: color 0.3s;" onmouseover="this.style.color='var(--rosa-mexicano)'" onmouseout="this.style.color='white'">
+                  <i class="fab fa-instagram"></i>
+              </a>
+
+              <!-- YouTube -->
+              <a href="https://www.youtube.com/TU_CANAL" target="_blank" rel="noopener noreferrer" style="color: white; font-size: 1.8rem; transition: color 0.3s;" onmouseover="this.style.color='red'" onmouseout="this.style.color='white'">
+                  <i class="fab fa-youtube"></i>
+              </a>
+          </div>
+
+          <div style="padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; opacity: 0.5;">
+              <p>Ballet Folklórico Nayahuari © 2026. Todos los derechos reservados.</p>
+          </div>
+      </div>
+    </footer>
+
+    <!-- MODAL LOGIN -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">×</span>
+        <div class="login-header">
+          <h2 style="color: var(--rosa-mexicano);">Bienvenido</h2>
+          <p>Ingresa tus credenciales</p>
+        </div>
+        
+        <form class="login-form" id="universalLoginForm" style="margin-top: 20px;">
+          <div class="input-group">
+            <span class="material-icons input-icon">person</span>
+            <input type="text" id="loginUser" placeholder="Usuario" required>
+          </div>
+          <div class="input-group">
+            <span class="material-icons input-icon">lock</span>
+            <input type="password" id="loginPass" placeholder="Contraseña" required>
+          </div>
+          <button type="submit" class="btn-primary full-width">Iniciar Sesión</button>
+        </form>
+        
+        <div id="loginMessage" class="login-message" style="margin-top:15px; font-weight:bold;"></div>
+      </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- JS SEPARADO -->
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=final"></script>
 </body>
 </html>
