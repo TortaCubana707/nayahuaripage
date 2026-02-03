@@ -1,116 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Gestión | Nayahuari</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Gestión</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}?v=24">
-    
-    <!-- LIBRERÍAS QR -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}?v=restaurado">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
     <div class="zarape-line"></div>
-    
-    <!-- Botón Menú Móvil -->
-    <div class="dashboard-menu-btn">
-        <span class="material-icons">menu</span>
-    </div>
-    
-    <!-- Overlay Móvil -->
-    <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
     <div class="dashboard-layout">
         <aside class="sidebar">
-            <div class="logo" style="margin-bottom: 3rem; text-align: center;">
-                <span style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent);">PANEL</span><br>
-                <strong style="color: white; font-size: 1.5rem;">NAYAHUARI</strong>
-            </div>
-            
+            <div class="logo" style="margin-bottom: 3rem; text-align: center;"><span style="font-size: 0.7rem; letter-spacing: 2px; color: var(--accent);">PANEL</span><br><strong style="color: white; font-size: 1.5rem;">NAYAHUARI</strong></div>
             <nav id="adminMenu" style="display: none;">
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 10px; font-weight: bold; padding-left: 15px;">ADMINISTRACIÓN</p>
-                <a href="#" onclick="mostrarSeccion('usuarios')" id="nav-usuarios" class="menu-item active"><span class="material-icons">group</span> Usuarios / Alumnos</a>
+                <a href="#" onclick="mostrarSeccion('usuarios')" id="nav-usuarios" class="menu-item active"><span class="material-icons">group</span> Usuarios</a>
                 <a href="#" onclick="mostrarSeccion('eventos')" id="nav-eventos" class="menu-item"><span class="material-icons">event</span> Eventos</a>
                 <a href="#" onclick="mostrarSeccion('pagos')" id="nav-pagos" class="menu-item"><span class="material-icons">payments</span> Pagos</a>
                 <a href="#" onclick="mostrarSeccion('vestuario')" id="nav-vestuario" class="menu-item"><span class="material-icons">checkroom</span> Vestuario</a>
                 <a href="#" onclick="mostrarSeccion('asistencia')" id="nav-asistencia" class="menu-item"><span class="material-icons">checklist</span> Asistencia (QR)</a>
             </nav>
-
             <nav id="userMenu" style="display: none;">
                 <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 10px; font-weight: bold; padding-left: 15px;">MI CUENTA</p>
                 <a href="#" onclick="mostrarSeccion('alumno-asistencia')" id="nav-alumno-asistencia" class="menu-item active"><span class="material-icons">qr_code_scanner</span> Escanear Asistencia</a>
                 <a href="#" onclick="mostrarSeccion('alumno-eventos')" id="nav-alumno-eventos" class="menu-item"><span class="material-icons">event_note</span> Agenda</a>
                 <a href="#" onclick="mostrarSeccion('alumno-vestuario')" id="nav-alumno-vestuario" class="menu-item"><span class="material-icons">checkroom</span> Mis Préstamos</a>
             </nav>
-            
-            <div style="margin-top: auto;">
-                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;">
-                <a href="/" class="menu-item"><span class="material-icons">public</span> Ver Web</a>
-                <button onclick="cerrarSesion()" class="menu-item" style="width: 100%; background: none; border: none; cursor: pointer; color: #ef4444;"><span class="material-icons">logout</span> Cerrar Sesión</button>
-            </div>
+            <div style="margin-top: auto;"><hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0;"><a href="/" class="menu-item"><span class="material-icons">public</span> Ver Web</a><button onclick="cerrarSesion()" class="menu-item" style="width: 100%; background: none; border: none; cursor: pointer; color: #ef4444;"><span class="material-icons">logout</span> Cerrar Sesión</button></div>
         </aside>
-        
         <main class="main-content">
-            <header class="header-bar animate-fade">
-                <div><h1 id="pageTitle" style="color: var(--dark-bg);">Bienvenido</h1><p id="welcomeTitle" style="color: var(--text-light); font-size: 0.9rem;">Panel de Control</p></div>
-                <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px; border-radius: 50px; box-shadow: var(--shadow);"><div style="background: var(--amarillo-cempasuchil); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="material-icons" style="color: var(--azul-noche); font-size: 1.2rem;">person</span></div><div><span id="userNameDisplay" style="display: block; font-weight: bold; font-size: 0.9rem; color: var(--azul-noche);">Usuario</span><span id="userRoleDisplay" style="display: block; font-size: 0.7rem; color: var(--text-light);">Rol</span></div></div>
-            </header>
+            <header class="header-bar animate-fade"><div><h1 id="pageTitle" style="color: var(--dark-bg);">Bienvenido</h1></div><div style="display: flex; align-items: center; gap: 10px; background: white; padding: 5px 15px; border-radius: 50px; box-shadow: var(--shadow);"><div style="background: var(--amarillo-cempasuchil); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><span class="material-icons" style="color: var(--azul-noche); font-size: 1.2rem;">person</span></div><div><span id="userNameDisplay" style="display: block; font-weight: bold; font-size: 0.9rem; color: var(--azul-noche);">Usuario</span><span id="userRoleDisplay" style="display: block; font-size: 0.7rem; color: var(--text-light);">Rol</span></div></div></header>
             
-            <div id="section-usuarios" class="admin-section animate-slide"><div class="card-table"><h3 style="margin-bottom: 1.5rem; color: var(--rosa-mexicano);">Gestión de Usuarios</h3><form id="formUsuario" class="form-grid-responsive"><input type="hidden" id="usuarioId"><div class="form-group-item"><label>Usuario</label><input type="text" id="usuarioUsername" class="form-control" required></div><div class="form-group-item"><label>Contraseña</label><input type="password" id="usuarioPassword" class="form-control"></div><div class="form-group-item"><label>Rol</label><select id="usuarioRol" class="form-control" onchange="toggleCamposAlumno()"><option value="alumno">Alumno</option><option value="maestro">Maestro</option><option value="administrativo">Administrativo</option><option value="admin">Administrador</option></select></div><div class="form-group-item campo-alumno"><label>Nombre</label><input type="text" id="usuarioNombre" class="form-control"></div><div class="form-group-item campo-alumno"><label>Teléfono</label><input type="text" id="usuarioTelefono" class="form-control"></div><div class="form-group-item campo-alumno"><label>Nivel</label><select id="usuarioNivel" class="form-control"><option value="Principiante">Principiante</option><option value="Intermedio">Intermedio</option><option value="Avanzado">Avanzado</option></select></div><div class="form-group-item btn-container"><button type="submit" class="btn-success" style="height: 48px; width: 100%;"><span class="material-icons">save</span> Guardar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><thead><tr><th>Usuario / Nombre</th><th>Rol</th><th>Acciones</th></tr></thead><tbody id="tablaUsuarios"></tbody></table></div></div>
-            
-            <!-- OTROS SECCIONES ADMIN -->
-            <div id="section-eventos" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Crear Evento</h3><form id="formEvento" class="form-grid-responsive"><div class="form-group-item"><input type="text" id="tituloEvento" class="form-control" placeholder="Título" required></div><div class="form-group-item"><input type="text" id="fechaEvento" class="form-control" placeholder="Fecha"></div><div class="form-group-item"><input type="text" id="lugarEvento" class="form-control" placeholder="Lugar"></div><div class="form-group-item"><input type="text" id="horaEvento" class="form-control" placeholder="Hora"></div><div class="btn-container"><button class="btn-success">Crear</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaEventos"></tbody></table></div></div>
-            <div id="section-pagos" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Registrar Pago</h3><form id="formPago" class="form-grid-responsive"><div class="form-group-item"><select id="pagoUsuario" class="form-control" required></select></div><div class="form-group-item"><input type="text" id="pagoConcepto" class="form-control" placeholder="Concepto"></div><div class="form-group-item"><input type="number" id="pagoMonto" class="form-control" placeholder="Monto"></div><div class="btn-container"><button class="btn-success">Registrar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaPagos"></tbody></table></div></div>
-            <div id="section-vestuario" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Vestuario</h3><form id="formVestuario" class="form-grid-responsive"><div class="form-group-item"><input type="text" id="vestuarioNombre" class="form-control" placeholder="Nombre"></div><div class="form-group-item"><select id="vestuarioTipo" class="form-control"><option>Traje</option><option>Accesorio</option></select></div><div class="form-group-item"><input type="number" id="vestuarioCantidad" class="form-control" value="1"></div><div class="form-group-item"><input type="text" id="vestuarioTalla" class="form-control" placeholder="Talla"></div><div class="form-group-item"><select id="vestuarioEstado" class="form-control"><option>Bueno</option><option>Reparación</option></select></div><div class="btn-container"><button class="btn-success">Agregar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaVestuario"></tbody></table></div></div>
-            
-            <!-- SECCIÓN ASISTENCIA ADMIN (Generador QR) -->
-            <div id="section-asistencia" class="admin-section animate-slide" style="display:none;">
+            <div id="section-usuarios" class="admin-section animate-slide">
                 <div class="card-table">
-                    <h3 style="color:var(--primary); text-align:center; margin-bottom:20px;">Código QR para Asistencia</h3>
-                    <div style="display:flex; flex-direction:column; align-items:center;">
-                        <input type="hidden" id="fechaAsistencia">
-                        <div id="qrcode-container">
-                            <div id="qrcode"></div>
-                            <p id="qr-date-label" style="margin-top:10px; font-weight:bold; color:var(--dark-bg);"></p>
-                        </div>
-                        <button onclick="generarQR()" class="btn-success" style="margin-top:20px; font-size:1.1rem;">
-                            <span class="material-icons">qr_code</span> Generar QR de Hoy
-                        </button>
-                    </div>
+                    <h3 style="margin-bottom: 1.5rem; color: var(--rosa-mexicano);">Gestión de Usuarios</h3>
+                    <form id="formUsuario" class="form-grid-responsive">
+                        <input type="hidden" id="usuarioId">
+                        <div class="form-group-item"><label>Usuario (Login)</label><input type="text" id="usuarioUsername" class="form-control" required></div>
+                        <div class="form-group-item"><label>Nombre Completo</label><input type="text" id="usuarioNombre" class="form-control"></div>
+                        <div class="form-group-item"><label>Teléfono</label><input type="text" id="usuarioTelefono" class="form-control"></div>
+                        <div class="form-group-item"><label>Contraseña</label><input type="password" id="usuarioPassword" class="form-control" placeholder="Nueva contraseña"></div>
+                        <div class="form-group-item"><label>Rol</label><select id="usuarioRol" class="form-control"><option value="alumno">Alumno</option><option value="maestro">Maestro</option><option value="administrativo">Administrativo</option><option value="admin">Administrador</option></select></div>
+                        <div class="form-group-item btn-container"><button type="submit" class="btn-success" style="height: 48px; width: 100%;"><span class="material-icons">save</span> Guardar</button></div>
+                    </form>
                 </div>
+                <div class="card-table"><table class="tabla-moderna"><thead><tr><th>Usuario</th><th>Rol</th><th>Nombre</th><th>Acciones</th></tr></thead><tbody id="tablaUsuarios"></tbody></table></div>
             </div>
-
-            <!-- SECCIONES ALUMNO -->
-            <div id="section-alumno-asistencia" class="alumno-section animate-slide" style="display:none;">
-                <div class="user-welcome-card" style="background: linear-gradient(135deg, var(--rosa-mexicano), var(--azul-talavera)); color: white; padding: 3rem; border-radius: 20px; text-align: center; margin-bottom: 2rem;">
-                    <h2 style="font-size: 2.5rem; margin-bottom: 10px;">¡Hola!</h2>
-                    <p>Escanea el código QR del salón para marcar tu asistencia.</p>
-                    
-                    <div style="margin-top: 2rem; max-width: 400px; margin-left: auto; margin-right: auto;">
-                        <div id="reader" style="display:none; width: 100%;"></div>
-                        
-                        <button onclick="iniciarEscaner()" id="btnEscanearQR" class="btn-success" style="font-size: 1.2rem; padding: 15px 40px; border: none; background: white; color: var(--azul-talavera); margin-top: 20px;">
-                            <span class="material-icons" style="vertical-align: middle; margin-right: 10px;">photo_camera</span>
-                            Escanear QR
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="section-alumno-eventos" class="alumno-section animate-slide" style="display:none;">
-                <h3 style="color: var(--dark-bg); margin-bottom: 1.5rem;">Agenda de Eventos</h3>
-                <div id="alumnoEventosContainer" class="calendar-grid"></div>
-            </div>
-            <div id="section-alumno-vestuario" class="alumno-section animate-slide" style="display:none;">
-                <h3 style="color: var(--dark-bg); margin-bottom: 1.5rem;">Inventario Disponible</h3>
-                <div class="card-table"><div id="alumnoVestuarioContainer"></div></div>
-            </div>
-
+            
+            <div id="section-eventos" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Eventos</h3><form id="formEvento" class="form-grid-responsive"><div class="form-group-item"><input type="text" id="tituloEvento" class="form-control" placeholder="Título" required></div><div class="form-group-item"><input type="text" id="fechaEvento" class="form-control" placeholder="Fecha"></div><div class="form-group-item"><input type="text" id="lugarEvento" class="form-control" placeholder="Lugar"></div><div class="form-group-item"><input type="text" id="horaEvento" class="form-control" placeholder="Hora"></div><div class="btn-container"><button class="btn-success">Crear</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaEventos"></tbody></table></div></div>
+            <div id="section-pagos" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Pagos</h3><form id="formPago" class="form-grid-responsive"><div class="form-group-item"><select id="pagoUsuario" class="form-control" required></select></div><div class="form-group-item"><input type="text" id="pagoConcepto" class="form-control" placeholder="Concepto"></div><div class="form-group-item"><input type="number" id="pagoMonto" class="form-control" placeholder="Monto"></div><div class="btn-container"><button class="btn-success">Registrar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaPagos"></tbody></table></div></div>
+            <div id="section-vestuario" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Vestuario</h3><form id="formVestuario" class="form-grid-responsive"><div class="form-group-item"><input type="text" id="vestuarioNombre" class="form-control" placeholder="Nombre"></div><div class="form-group-item"><select id="vestuarioTipo" class="form-control"><option>Traje</option><option>Accesorio</option></select></div><div class="form-group-item"><input type="number" id="vestuarioCantidad" class="form-control" value="1"></div><div class="form-group-item"><input type="text" id="vestuarioTalla" class="form-control" placeholder="Talla"></div><div class="form-group-item"><select id="vestuarioEstado" class="form-control"><option>Bueno</option><option>Reparación</option></select></div><div class="btn-container"><button class="btn-success">Agregar</button></div></form></div><div class="card-table"><table class="tabla-moderna"><tbody id="tablaVestuario"></tbody></table></div></div>
+            <div id="section-asistencia" class="admin-section animate-slide" style="display:none;"><div class="card-table"><h3>Código QR Asistencia</h3><div style="display:flex;flex-direction:column;align-items:center;"><input type="hidden" id="fechaAsistencia"><div id="qrcode"></div><button onclick="generarQR()" class="btn-success" style="margin-top:20px;">Generar QR Hoy</button></div></div></div>
+            
+            <div id="section-alumno-asistencia" class="alumno-section animate-slide" style="display:none;"><div class="user-welcome-card" style="background: linear-gradient(135deg, var(--rosa-mexicano), var(--azul-talavera)); color: white; padding: 3rem; border-radius: 20px; text-align: center;"><h2 style="font-size: 2.5rem; margin-bottom: 10px;">¡Hola!</h2><p>Escanea el QR.</p><div style="margin-top: 2rem;"><div id="reader" style="display:none;"></div><button onclick="iniciarEscaner()" id="btnEscanearQR" class="btn-success" style="font-size: 1.2rem; padding: 15px 40px; border: none; background: white; color: var(--azul-talavera);">Escanear</button></div></div></div>
+            <div id="section-alumno-eventos" class="alumno-section animate-slide" style="display:none;"><h3>Agenda</h3><div id="alumnoEventosContainer" class="calendar-grid"></div></div>
+            <div id="section-alumno-vestuario" class="alumno-section animate-slide" style="display:none;"><h3>Inventario</h3><div class="card-table"><div id="alumnoVestuarioContainer"></div></div></div>
         </main>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}?v=23"></script>
-    <script>function toggleCamposAlumno() { const rol = document.getElementById('usuarioRol').value; const campos = document.querySelectorAll('.campo-alumno'); campos.forEach(c => c.style.display = (rol === 'alumno') ? 'block' : 'none'); } toggleCamposAlumno();</script>
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=restaurado"></script>
 </body>
 </html>
