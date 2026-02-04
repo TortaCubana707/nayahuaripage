@@ -1,4 +1,8 @@
+import os
 
+print("🚀 REPARANDO LÓGICA COMPLETA (QR + REGISTRO + ALERTAS)...")
+
+contenido_js = """
 const API_URL = '/api';
 let usuarioRol = localStorage.getItem('usuario_rol');
 let usuarioLogueado = localStorage.getItem('usuario_logueado') === 'true';
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==========================================
 function validarPasswordFrontend(password) {
     if (password.length < 8) return "Mínimo 8 caracteres.";
-    if (!/\d/.test(password)) return "Debe incluir al menos un número.";
+    if (!/\\d/.test(password)) return "Debe incluir al menos un número.";
     if (!/[A-Z]/.test(password)) return "Debe incluir al menos una mayúscula.";
     return null;
 }
@@ -332,3 +336,11 @@ window.cerrarSesion = function() {
         window.location.href = '/';
     });
 };
+"""
+
+with open("static/js/main.js", "w", encoding="utf-8") as f:
+    f.write(contenido_js)
+
+print("✅ REPARADO: Botón Registro, Alertas y QR.")
+print("1. Recarga con Ctrl+F5")
+print("2. Prueba crear cuenta y luego iniciar sesión.")
