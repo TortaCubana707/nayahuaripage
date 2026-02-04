@@ -10,7 +10,6 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-# Configuración BD
 basedir = os.path.abspath(os.path.dirname(__file__))
 db_file_env = os.getenv('DB_FILE', 'database/mi_app.sqlite')
 
@@ -26,25 +25,22 @@ app.config['SECRET_KEY'] = os.getenv('JWT_SECRET', 'dev_secret_key')
 
 db = SQLAlchemy(app)
 
-# --- UTILIDADES DE SEGURIDAD ---
+# --- UTILIDADES ---
 def validar_password_segura(password):
-    if len(password) < 8:
-        return False, "La contraseña debe tener al menos 8 caracteres."
-    if not re.search(r"[A-Z]", password):
-        return False, "La contraseña debe incluir al menos una mayúscula."
-    if not re.search(r"\d", password):
-        return False, "La contraseña debe incluir al menos un número."
+    if len(password) < 8: return False, "Mínimo 8 caracteres."
+    if not re.search(r"[A-Z]", password): return False, "Falta una mayúscula."
+    if not re.search(r"\d", password): return False, "Falta un número."
     return True, ""
 
-# --- MODELOS (Sin Nivel) ---
+# --- MODELOS ---
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False) # Email/Login
+    username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     rol = db.Column(db.String(20), default='alumno')
     nombre_completo = db.Column(db.String(100))
     telefono = db.Column(db.String(20))
-    # Nivel ELIMINADO
+    nivel = db.Column(db.String(50))
     es_admin = db.Column(db.Boolean, default=False) 
 
 class Evento(db.Model):
@@ -53,6 +49,7 @@ class Evento(db.Model):
     fecha = db.Column(db.String(50))
     lugar = db.Column(db.String(100))
     hora = db.Column(db.String(50))
+    imagen_url = db.Column(db.String(500)) # NUEVO CAMPO PARA IMAGEN
 
 class Pago(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -81,9 +78,6 @@ class Vestuario(db.Model):
 @app.route('/')
 def inicio(): return render_template('index.html')
 
-@app.route('/registro')
-def vista_registro(): return render_template('registro.html')
-
 @app.route('/dashboard')
 def dashboard(): return render_template('dashboard.html')
 
@@ -106,100 +100,30 @@ def login():
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    nombre_completo = data.get('nombre')
+    if not data.get('username') or not data.get('password'): return jsonify({"success": False, "mensaje": "Faltan datos"}), 400
+    if not data['username'].endswith('@gmail.com'): return jsonify({"success": False, "mensaje": "Solo gmail.com"}), 400
+    if Usuario.query.filter_by(username=data['username']).first(): return jsonify({"success": False, "mensaje": "Usuario existe"}), 400
     
-    if not username or not password or not nombre_completo:
-        return jsonify({"success": False, "mensaje": "Faltan datos obligatorios"}), 400
-    
-    # Validación Google
-    if not username.endswith('@gmail.com'):
-        return jsonify({"success": False, "mensaje": "Solo se permiten correos @gmail.com"}), 400
-        
-    # Validación Contraseña Segura
-    es_segura, msg_pass = validar_password_segura(password)
-    if not es_segura:
-        return jsonify({"success": False, "mensaje": msg_pass}), 400
+    es_segura, msg = validar_password_segura(data['password'])
+    if not es_segura: return jsonify({"success": False, "mensaje": msg}), 400
 
-    if Usuario.query.filter_by(username=username).first():
-        return jsonify({"success": False, "mensaje": "El usuario ya existe"}), 400
-        
-    hashed = generate_password_hash(password)
-    nuevo = Usuario(
-        username=username, 
-        password=hashed, 
-        rol='alumno', 
-        es_admin=False,
-        nombre_completo=nombre_completo, 
-        telefono=data.get('telefono', '')
-    )
-    db.session.add(nuevo)
-    db.session.commit()
+    nuevo = Usuario(username=data['username'], password=generate_password_hash(data['password']), rol='alumno', es_admin=False, nombre_completo=data.get('nombre', ''), telefono=data.get('telefono', ''), nivel=data.get('nivel', 'Principiante'))
+    db.session.add(nuevo); db.session.commit()
     return jsonify({"success": True, "mensaje": "Registro exitoso"})
 
-# --- API ASISTENCIA ---
-@app.route('/api/asistencia', methods=['GET', 'POST'])
-def gestionar_asistencia():
-    if request.method == 'GET':
-        fecha = request.args.get('fecha', datetime.now().strftime("%Y-%m-%d"))
-        alumnos = Usuario.query.filter_by(rol='alumno').all()
-        lista = []
-        for a in alumnos:
-            registro = Asistencia.query.filter_by(fecha=fecha, usuario_id=a.id).first()
-            lista.append({
-                "id_usuario": a.id, "nombre": a.nombre_completo or a.username, 
-                "presente": registro.presente if registro else False
-            })
-        return jsonify(lista)
-
-    if request.method == 'POST':
-        data = request.json
-        fecha = datetime.now().strftime("%Y-%m-%d")
-        if 'qr_data' in data: # QR
-            codigo_esperado = f"NAYAHUARI_ASISTENCIA_{fecha}"
-            if data['qr_data'] != codigo_esperado:
-                return jsonify({"success": False, "mensaje": "Código QR inválido"}), 400
-            uid = data['id_usuario']
-            if not Asistencia.query.filter_by(fecha=fecha, usuario_id=uid).first():
-                db.session.add(Asistencia(fecha=fecha, usuario_id=uid, presente=True))
-                db.session.commit()
-                return jsonify({"success": True, "mensaje": "¡Asistencia Registrada!"})
-            else:
-                return jsonify({"success": True, "mensaje": "Ya registrada."})
-        elif 'registros' in data: # Manual
-            fecha_manual = data.get('fecha', fecha)
-            Asistencia.query.filter_by(fecha=fecha_manual).delete()
-            for item in data['registros']:
-                db.session.add(Asistencia(fecha=fecha_manual, usuario_id=item['id_usuario'], presente=item['presente']))
-            db.session.commit()
-            return jsonify({"success": True})
-    return jsonify({"success": False}), 400
-
-# --- API USUARIOS ---
+# APIS CRUD
 @app.route('/api/usuarios', methods=['GET', 'POST'])
 def gestionar_usuarios():
     if request.method == 'GET':
-        query = Usuario.query
-        if request.args.get('rol'): query = query.filter_by(rol=request.args.get('rol'))
-        return jsonify([{"id": u.id, "username": u.username, "rol": u.rol, "nombre": u.nombre_completo, "telefono": u.telefono} for u in query.all()])
-    
+        q = Usuario.query
+        if request.args.get('rol'): q = q.filter_by(rol=request.args.get('rol'))
+        return jsonify([{"id": u.id, "username": u.username, "rol": u.rol, "nombre": u.nombre_completo, "telefono": u.telefono, "nivel": u.nivel} for u in q.all()])
     if request.method == 'POST':
         d = request.json
-        if Usuario.query.filter_by(username=d['username']).first(): return jsonify({"success": False, "mensaje": "Usuario ya existe"}), 400
-        
-        # Validar pass
-        es_segura, msg_pass = validar_password_segura(d['password'])
-        if not es_segura: return jsonify({"success": False, "mensaje": msg_pass}), 400
-
-        n = Usuario(
-            username=d['username'], 
-            password=generate_password_hash(d['password']), 
-            rol=d['rol'], 
-            es_admin=(d['rol'] in ['admin', 'staff']), 
-            nombre_completo=d.get('nombre',''), 
-            telefono=d.get('telefono','')
-        )
+        if Usuario.query.filter_by(username=d['username']).first(): return jsonify({"success": False, "mensaje": "Existe"}), 400
+        val, msg = validar_password_segura(d['password'])
+        if not val: return jsonify({"success": False, "mensaje": msg}), 400
+        n = Usuario(username=d['username'], password=generate_password_hash(d['password']), rol=d['rol'], es_admin=(d['rol'] in ['admin', 'staff']), nombre_completo=d.get('nombre',''), telefono=d.get('telefono',''), nivel=d.get('nivel',''))
         db.session.add(n); db.session.commit(); return jsonify({"success": True})
 
 @app.route('/api/usuarios/<int:id>', methods=['PUT', 'DELETE'])
@@ -208,22 +132,48 @@ def usuario_id(id):
     if not u: return jsonify({"success": False}), 404
     if request.method == 'PUT':
         d = request.json
-        u.username=d.get('username',u.username); u.rol=d.get('rol',u.rol); u.nombre_completo=d.get('nombre',u.nombre_completo); u.telefono=d.get('telefono',u.telefono)
+        u.username=d.get('username',u.username); u.rol=d.get('rol',u.rol); u.nombre_completo=d.get('nombre',u.nombre_completo); u.telefono=d.get('telefono',u.telefono); u.nivel=d.get('nivel',u.nivel)
         if d.get('password'): 
-            es_segura, msg = validar_password_segura(d['password'])
-            if not es_segura: return jsonify({"success": False, "mensaje": msg}), 400
+            val, msg = validar_password_segura(d['password'])
+            if not val: return jsonify({"success": False, "mensaje": msg}), 400
             u.password = generate_password_hash(d['password'])
         db.session.commit(); return jsonify({"success": True})
     if request.method == 'DELETE':
-        if u.username == 'admin': return jsonify({"success": False, "mensaje": "No se puede borrar al superadmin"}), 400
+        if u.username == 'admin': return jsonify({"success": False}), 400
         db.session.delete(u); db.session.commit(); return jsonify({"success": True})
 
-# --- APIS RESTANTES (Pagos, Eventos, Vestuario) ---
+# EVENTOS (Actualizado con imagen)
+@app.route('/api/eventos', methods=['GET', 'POST'])
+def gestionar_eventos():
+    if request.method == 'GET': 
+        return jsonify([{"id": e.id, "titulo": e.titulo, "fecha": e.fecha, "lugar": e.lugar, "hora": e.hora, "imagen_url": getattr(e, 'imagen_url', '')} for e in Evento.query.all()])
+    if request.method == 'POST': 
+        d=request.json
+        db.session.add(Evento(titulo=d['titulo'], fecha=d['fecha'], lugar=d.get('lugar',''), hora=d.get('hora',''), imagen_url=d.get('imagen_url','')))
+        db.session.commit()
+        return jsonify({"success": True})
+
+@app.route('/api/eventos/<int:id>', methods=['PUT', 'DELETE'])
+def evento_id(id):
+    e = Evento.query.get(id)
+    if not e: return jsonify({"success": False}), 404
+    if request.method == 'DELETE':
+        db.session.delete(e); db.session.commit(); return jsonify({"success": True})
+    if request.method == 'PUT':
+        d = request.json
+        e.titulo = d.get('titulo', e.titulo)
+        e.fecha = d.get('fecha', e.fecha)
+        e.lugar = d.get('lugar', e.lugar)
+        e.hora = d.get('hora', e.hora)
+        e.imagen_url = d.get('imagen_url', e.imagen_url)
+        db.session.commit()
+        return jsonify({"success": True})
+
+# OTROS
 @app.route('/api/pagos', methods=['GET', 'POST'])
 def gestionar_pagos():
-    if request.method == 'GET': return jsonify([{"id": p.id, "bailarin": p.usuario.nombre_completo if p.usuario else "Desconocido", "concepto": p.concepto, "monto": p.monto, "fecha": p.fecha_pago} for p in Pago.query.order_by(Pago.id.desc()).all()])
-    if request.method == 'POST':
-        data = request.json; db.session.add(Pago(usuario_id=data['usuario_id'], concepto=data['concepto'], monto=float(data['monto']), fecha_pago=datetime.now().strftime("%Y-%m-%d"))); db.session.commit(); return jsonify({"success": True})
+    if request.method == 'GET': return jsonify([{"id": p.id, "bailarin": p.usuario.nombre_completo if p.usuario else "Unknown", "concepto": p.concepto, "monto": p.monto, "fecha": p.fecha_pago} for p in Pago.query.order_by(Pago.id.desc()).all()])
+    if request.method == 'POST': d=request.json; db.session.add(Pago(usuario_id=d['usuario_id'], concepto=d['concepto'], monto=float(d['monto']), fecha_pago=datetime.now().strftime("%Y-%m-%d"))); db.session.commit(); return jsonify({"success": True})
 @app.route('/api/pagos/<int:id>', methods=['DELETE'])
 def borrar_pago(id): p=Pago.query.get(id); db.session.delete(p); db.session.commit(); return jsonify({"success": True})
 
@@ -234,17 +184,33 @@ def gestionar_vestuario():
 @app.route('/api/vestuario/<int:id>', methods=['DELETE'])
 def borrar_vestuario(id): v=Vestuario.query.get(id); db.session.delete(v); db.session.commit(); return jsonify({"success": True})
 
-@app.route('/api/eventos', methods=['GET', 'POST'])
-def gestionar_eventos():
-    if request.method == 'GET': return jsonify([{"id": e.id, "titulo": e.titulo, "fecha": e.fecha, "lugar": e.lugar, "hora": e.hora} for e in Evento.query.all()])
-    if request.method == 'POST': d=request.json; db.session.add(Evento(titulo=d['titulo'], fecha=d['fecha'], lugar=d.get('lugar',''), hora=d.get('hora',''))); db.session.commit(); return jsonify({"success": True})
-@app.route('/api/eventos/<int:id>', methods=['DELETE'])
-def borrar_evento(id): e=Evento.query.get(id); db.session.delete(e); db.session.commit(); return jsonify({"success": True})
+@app.route('/api/asistencia', methods=['GET', 'POST'])
+def gestionar_asistencia():
+    if request.method == 'GET':
+        fecha = request.args.get('fecha', datetime.now().strftime("%Y-%m-%d"))
+        alumnos = Usuario.query.filter_by(rol='alumno').all()
+        lista = []
+        for a in alumnos:
+            registro = Asistencia.query.filter_by(fecha=fecha, usuario_id=a.id).first()
+            lista.append({"id_usuario": a.id, "nombre": a.nombre_completo or a.username, "nivel": a.nivel, "presente": registro.presente if registro else False})
+        return jsonify(lista)
+    if request.method == 'POST':
+        data = request.json; fecha = datetime.now().strftime("%Y-%m-%d")
+        if 'qr_data' in data:
+            if data['qr_data'] != f"NAYAHUARI_ASISTENCIA_{fecha}": return jsonify({"success": False, "mensaje": "QR Inválido"}), 400
+            uid = data['id_usuario']
+            if not Asistencia.query.filter_by(fecha=fecha, usuario_id=uid).first():
+                db.session.add(Asistencia(fecha=fecha, usuario_id=uid, presente=True)); db.session.commit(); return jsonify({"success": True, "mensaje": "Asistencia OK"})
+            return jsonify({"success": True, "mensaje": "Ya registrado"})
+        elif 'registros' in data:
+            fecha = data.get('fecha', fecha)
+            Asistencia.query.filter_by(fecha=fecha).delete()
+            for item in data['registros']: db.session.add(Asistencia(fecha=fecha, usuario_id=item['id_usuario'], presente=item['presente']))
+            db.session.commit(); return jsonify({"success": True})
+    return jsonify({"success": False}), 400
 
-# Compatibilidad para frontend que busque 'bailarines'
 @app.route('/api/bailarines', methods=['GET'])
-def get_bailarines():
-    return jsonify([{"id": a.id, "nombre": a.nombre_completo or a.username, "contacto": a.telefono} for a in Usuario.query.filter_by(rol='alumno').all()])
+def get_bailarines(): return jsonify([{"id": a.id, "nombre": a.nombre_completo or a.username, "nivel": a.nivel, "contacto": a.telefono} for a in Usuario.query.filter_by(rol='alumno').all()])
 
 if __name__ == '__main__':
     with app.app_context():
@@ -253,5 +219,4 @@ if __name__ == '__main__':
         if not Usuario.query.filter_by(username='admin').first():
             db.session.add(Usuario(username='admin', password=generate_password_hash('Admin1234'), rol='admin', es_admin=True, nombre_completo="Director General"))
             db.session.commit()
-            print("--- ADMIN CREADO ---")
     app.run(host='0.0.0.0', debug=(os.getenv('NODE_ENV') == 'development'), port=int(os.getenv('PORT', 3000)))
